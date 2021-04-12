@@ -1,56 +1,125 @@
 import React from "react";
-import { Typography , CssBaseline , AppBar, Toolbar , Container, Card, CardContent, TextField, Grid, Button } from "@material-ui/core";
+import { Typography , CssBaseline , AppBar, Toolbar , Container, Card, CardContent, TextField, InputAdornment, IconButton } from "@material-ui/core";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 import UseStyles from "./Style";
-import { Add, Remove, Clear } from "@material-ui/icons";
-import { Calculator, Slash } from 'react-bootstrap-icons';
+
+function getlength(number) {
+    return number.toString().length;
+}
+
 
 
 const App = () => {
     const classes = UseStyles();
-    let [n1,setN1] = React.useState(0);
-    let [n2,setN2] = React.useState(0);
-    let [ans,setAns] = React.useState("");
+    let [showPIN, setVisibility] = React.useState(false);
+    let [msg, setMsg] = React.useState("");
+    let [PIN, setPIN] = React.useState("");
+    let [red, setRed] = React.useState(false);
+    let [yellow, setYellow] = React.useState(false);
+    let [green, setGreen] = React.useState(false);
+    let [tip, setTip] = React.useState("");
 
-    const changeMe1 = (event) => {
-        setN1(n1=event.target.value);
-        setAns(ans="");
-    }
-
-    const changeMe2 = (event) => {
-        setN2(n2=event.target.value);
-        setAns(ans="");
-    }
-
-    const AddNumbers = () => {
-        setAns(ans = +n1 + +n2);
-    }
-
-    const SubNumbers = () => {
-        setAns(ans = +n1 - +n2);
-    }
-
-    const MulNumbers = () => {
-        setAns(ans = +n1 * +n2);
-    }
-
-    const DivNumbers = () => {
-        if(+n2 === 0)
+    function PINauth(number){
+        if(getlength(+number) < 4)
         {
-            setAns(ans="Infinity");
+            setRed(true);
+            setYellow(false);
+            setGreen(false);
+            setMsg("Weak");
+            setTip("Tip: PIN length should be 4-digits");
+            return;
         }
-        else{
-            setAns(ans = +n1 / +n2);
+        if(1949 < +number && +number < 2020)
+        {
+            setRed(true);
+            setYellow(false);
+            setGreen(false);
+            setMsg("Weak");
+            setTip("Tip: PIN shouldn't be a common year");
+            return;
         }
+        let common = [1234,1111,0,1212,7777,1004,2000,4444,2222,6969,9999,3333,5555,6666,1122,1313,8888,4321,2001,1010];
+        for(let i=0 ; i<common.length ; i++)
+        {
+            if(+number===common[i])
+            {
+                setRed(true);
+                setYellow(false);
+                setGreen(false);
+                setMsg("Weak");
+                setTip("Tip: PIN shouldn't be a common pattern");
+                return;
+            }
+        }
+        PINauthSecond(+number);
     }
 
+    function PINauthSecond(n2){
+        let arr = n2.toString().split('');
+        for (let i = 0; i < arr.length; i++) arr[i] = +arr[i] | 0;
+        console.log(arr);
+        if((+arr[0]===(+arr[1]+1) && (+arr[1]===(+arr[2]+1)) && +arr[2]===(+arr[3]+1)) ||
+        (+arr[1]===(+arr[0]+1) && (+arr[2]===(+arr[1]+1)) && +arr[3]===(+arr[2]+1)))
+        {
+            setRed(false);
+            setYellow(true);
+            setGreen(false);
+            setMsg("Moderate");
+            setTip("Tip: PIN shouldn't be an increasing or decreasing pattern");
+            return;
+        }
+        let max=0;
+        for(let i=0 ; i<4 ; i++)
+        {
+            let recent=0;
+            for(let j=i+1 ; j<4 ; j++)
+            {
+                if(i!==j)
+                {
+                    if(arr[i]===arr[j])
+                    {
+                        recent++;
+                    }
+                }
+            }
+            max+=recent;
+        }
+        console.log(max);
+        if(max >=2)
+        {
+            setRed(true);
+            setYellow(false);
+            setGreen(false);
+            setMsg("Weak");
+            setTip("Tip: PIN should not contain repeating digits");
+            return;
+        }
+        else if(max>=1)
+        {
+            setRed(false);
+            setYellow(true);
+            setGreen(false);
+            setMsg("Moderate");
+            setTip("Tip: PIN should not contain repeating digits");
+            return;
+        }
+        else
+        {
+            setRed(false);
+            setYellow(false);
+            setGreen(true);
+            setMsg("Strong");
+            setTip("");
+            return;
+        }
+    }
 
     return( 
     <>
         <CssBaseline/>
         <AppBar className={classes.appBar} position="relative">
             <Toolbar>
-                <Typography className={classes.menuCalculator}><Calculator size="30px"/></Typography>
-                <Typography variant="h5">Calculator</Typography>
+                <Typography variant="h6">PIN Strength Meter</Typography>
             </Toolbar>
         </AppBar>
         <Container className={classes.card} maxWidth="sm">
@@ -59,34 +128,111 @@ const App = () => {
                 </AppBar>
                 <CardContent align="center">
                     <form noValidate autoComplete="off">
-                        <TextField className={classes.inputText} onChange={changeMe1} id="num1" label="First Number" variant="outlined" type="number"/>
-                    </form>
-                </CardContent>
-                <CardContent align="center">
-                    <form noValidate autoComplete="off">
-                        <TextField className={classes.inputText} onChange={changeMe2} id="num2" label="Second Number" variant="outlined" type="number"/>
+                        <TextField className={classes.inputText}  id="pin" label="Enter PIN" value={PIN} variant="outlined" 
+                        onKeyDown={
+                            (e) =>
+                            {
+                                if(e.key === "Backspace")
+                                {
+                                    setPIN(PIN.slice(0,PIN.length-1));
+                                    e.preventDefault();
+                                }
+                                else if(e.key === "Enter")
+                                {
+                                    PINauth(+PIN);
+                                }
+                                if(e.key === "0" || e.key === "1" || e.key === "2" || e.key === "3" || e.key === "4" ||
+                                 e.key === "5" || e.key === "6" || e.key === "7" || e.key === "8" || e.key === "9")
+                                {
+                                    
+                                }
+                                else
+                                {
+                                    e.preventDefault();
+                                }
+                                
+                            }} 
+                        onChange={
+                            ((e)=>
+                            {
+                                if(getlength(PIN) < 4)
+                                {
+                                    setPIN(e.target.value);
+                                }
+                            })
+                            }
+                        type={
+                            showPIN? "text":"password"
+                            } 
+                        InputProps={
+                            { 
+                                endAdornment: (
+                                <InputAdornment position="end">
+                                <IconButton onClick={
+                                    () => {
+                                        setVisibility(!showPIN);
+                                        console.log(showPIN);
+                                    }
+                                    } >
+                                    {
+                                        showPIN? <Visibility/> :<VisibilityOff/>
+                                    }
+                                </IconButton>
+                                </InputAdornment>) }}  />
+                        <AppBar className={
+                            (
+                                ()=>
+                                {
+                                    if(red)
+                                    {
+                                        return(classes.redBar);
+                                    }
+                                    else if(yellow)
+                                    {
+                                        return(classes.yellowBar);
+                                    }
+                                    else if(green)
+                                    {
+                                        return(classes.greenBar);
+                                    }
+                                }
+                            )()
+                            } position="relative"></AppBar>
+
+
+                        {
+                        (
+                            ()=>
+                            {
+                                return( <Typography className={
+                                    (()=> {
+                                        if(msg==="Weak")
+                                        {
+                                            return (classes.msgRed);
+                                        }
+                                        else if(msg==="Moderate")
+                                        {
+                                            return (classes.msgYellow);
+                                        }
+                                        else
+                                        {
+                                            return (classes.msgGreen);
+                                        }
+                                    })()
+                                } variant="h5">
+                                    {
+                                        (() => {
+                                            return (msg);
+                                        })()
+                                    }
+                                    </Typography> )
+                            }
+                        )()
+                        }
                     </form>
                 </CardContent>
                 <CardContent>
-                    <Grid className={classes.gridAdjust} container justify="center" alignItems="center" spacing={3}>
-                        <Grid item xs={5} sm={5} align="center">
-                            <Button className={classes.buttonAdjust} onClick={AddNumbers} variant="contained" color="primary" size="large" startIcon={<Add/>}>Add</Button>
-                        </Grid>
-                        <Grid item xs={5} sm={5} align="center">
-                            <Button className={classes.buttonAdjust} onClick={SubNumbers} variant="contained" color="primary" size="large" startIcon={<Remove/>}>Sub</Button>
-                        </Grid>
-                        <Grid item xs={5} sm={5} align="center">
-                            <Button className={classes.buttonAdjust} onClick={MulNumbers} variant="contained" color="primary" size="large" startIcon={<Clear/>}>Mul</Button>
-                        </Grid>
-                        <Grid item xs={5} sm={5} align="center">
-                            <Button className={classes.buttonAdjust} onClick={DivNumbers} variant="contained" color="primary" size="large" startIcon={<Slash className={classes.divideSign} size="30px"/>}>Div</Button>
-                        </Grid>
-                    </Grid>
-                </CardContent>
-                <CardContent align="center">
-                    <form noValidate autoComplete="off">
-                        <TextField className={classes.inputText} value={ans}  id="ans" placeholder="Answer" variant="outlined" type="text" InputProps={{readOnly: true}}/>
-                    </form>
+                    <Typography variant="h6" align="center">{tip}</Typography>
                 </CardContent>
             </Card>
         </Container>
@@ -95,3 +241,5 @@ const App = () => {
 }
 
 export default App;
+
+

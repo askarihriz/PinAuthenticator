@@ -5,46 +5,65 @@ const UseStyles = makeStyles({
 
     },
     appBar: {
-        background: 'linear-gradient(45deg, #FF5F6D 30%, #FFC371 90%)',
+        background: 'primary',
         minHeight: "20px",
         marginBottom: "20px"
     },
-    menuCalculator: {
-        marginRight: "10px"
+    redBar:{
+        background: "red",
+        minHeight: "5px",
+        marginBottom: "5px",
+        marginTop: "5px",
+        width: "50%",
+        borderRadius: "50px",
+    },
+    yellowBar:{
+      background: "yellow",
+      minHeight: "5px",
+      marginBottom: "5px",
+      marginTop: "5px",
+      width: "50%",
+      borderRadius: "50px",
+    },
+    greenBar:{
+      background: "lightgreen",
+      minHeight: "5px",
+      marginBottom: "5px",
+      marginTop: "5px",
+      width: "50%",
+      borderRadius: "50px",
+    },
+    msgRed:{
+      color: "red"
+    },
+    msgYellow:{
+      color: "orange"
+    },
+    msgGreen:{
+      color: "green"
     },
     card: {
-        marginTop: "75px",
+        marginTop: "125px",
         marginBottom: "75px"
     },
-    buttonAdjust: {
-        width: "100%",
-        borderRadius: "50px",
-        background: 'linear-gradient(45deg, #FF5F6D 30%, #FFC371 100%)',
-    },
-    divideSign: {
-        marginRight: "-5px"
-    },
-    gridAdjust: {
-    }
-    ,
     inputText: {
-        width: "90%",
+      width: "50%",
         '& label.Mui-focused': {
             color: 'grey',
           },
           '& .MuiInput-underline:after': {
-            borderBottomColor: 'yellow',
+            borderBottomColor: 'grey',
           },
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
               borderColor: 'lightgrey',
-              borderRadius: "50px",
+              borderRadius: "5px",
             },
             '&:hover fieldset': {
-              borderColor: '#FFC371',
+              borderColor: 'Primary',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#FF5F6D',
+              borderColor: 'Primary',
             },
         }
 }
