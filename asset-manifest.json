@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/PinAuthenticator/static/js/main.638c355e.chunk.js",
-    "main.js.map": "/PinAuthenticator/static/js/main.638c355e.chunk.js.map",
+    "main.js": "/PinAuthenticator/static/js/main.acf0e445.chunk.js",
+    "main.js.map": "/PinAuthenticator/static/js/main.acf0e445.chunk.js.map",
     "runtime-main.js": "/PinAuthenticator/static/js/runtime-main.fca423d4.js",
     "runtime-main.js.map": "/PinAuthenticator/static/js/runtime-main.fca423d4.js.map",
     "static/js/2.56468a13.chunk.js": "/PinAuthenticator/static/js/2.56468a13.chunk.js",
@@ -12,6 +12,6 @@
   "entrypoints": [
     "static/js/runtime-main.fca423d4.js",
     "static/js/2.56468a13.chunk.js",
-    "static/js/main.638c355e.chunk.js"
+    "static/js/main.acf0e445.chunk.js"
   ]
 }
